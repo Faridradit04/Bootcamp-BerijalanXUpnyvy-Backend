@@ -3,7 +3,11 @@ import cors from "cors";
 import { errorHandler } from "./middlewares/error.middleware.ts";
 import authRoutes from "./routes/auth.route.ts";
 import {connectRedis} from "./configs/redis.config.ts";
+
 const app = express();
+
+app.use(express.json());
+
 // connectRedis();
 app.use(cors());
 

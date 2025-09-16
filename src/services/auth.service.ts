@@ -15,6 +15,7 @@ export const SLogin = async (
   usernameOrEmail: string,
   password: string
 ): Promise<IGlobalResponse<ILoginResponse>> => {
+  // Fix 1: Find the admin by username or email only.
   const admin = await prisma.admin.findFirst({
     where: {
       OR: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
@@ -44,7 +45,7 @@ export const SLogin = async (
     status: true,
     message: "Login successful",
     data: {
-      token: token, 
+      token: token,
       admin: {
         id: admin.id,
         username: admin.username,
@@ -96,20 +97,21 @@ export const SRegisterAdmin = async (
     },
   };
 };
-
 export const SUpdateAdmin = async (
-  id : number,
-  username : string,
-  email : string,
-  name :string,
-  password : string ): Promise<IGlobalResponse> => {
-    const admin = await prisma.admin.findUnique({
-      where : {id}
-    });
-    if(!admin || admin.deletedAt) {
-      throw new Error("Admin not found");
+  id: number,
+  username: string ,
+  email: string ,
+  name: string ,
+  password: string
+): Promise<IGlobalResponse> => {
+  const admin = await prisma.admin.findUnique({
+    where: { id },
+  });
 
-    }
+  if (!admin) {
+    throw new Error("Admin not found");
+  }
+
   const updateAdmin = await prisma.admin.update({
     where: { id },
     data: {
@@ -131,7 +133,7 @@ export const SUpdateAdmin = async (
       name: updateAdmin.name,
     },
   };
-}
+};
 
 export const SdeleteAdmin = async ( 
   id : number

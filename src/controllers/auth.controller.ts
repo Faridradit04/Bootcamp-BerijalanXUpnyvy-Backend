@@ -9,14 +9,15 @@ export const CLogin=async (
     next:NextFunction
 ): Promise<void>=>{
     try {
-        const {username,password} = req.body;
-        const result = await SLogin(username,password);
+        const {usernameOrEmail,password} = req.body;
+        const result = await SLogin(usernameOrEmail,password);
         res.status(200).json(result);
     }
     catch (error) {
         next(error);
     }
 }
+
 
 
 export const CRegister = async(
@@ -33,21 +34,25 @@ catch(error){
     next(error);
 }
 }
-
-const Cupdateadmin= async (
-    req : Request,
+const Cupdateadmin = async (
+    req: Request,
     res: Response,
-    next:NextFunction
-) : Promise<void>=>{
+    next: NextFunction
+): Promise<void> => {
     try {
-        const {id,username,email,name,password} = req.body
-        const result = await SUpdateAdmin(id,username,email,name,password)
-        res.status(200).json(result)
+        const { id } = req.params;
+        const { username, email, name, password } = req.body;
+        if (!id) {
+            res.status(400).json({ status: false, message: "ID is required for update" });
+            return;
+        }
+
+        const result = await SUpdateAdmin(parseInt(id), username, email, name, password);
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
     }
-    catch (error){
-        next(error)
-    }
-}
+};
 
 const CDeleteadmin= async ( 
     req:Request,
