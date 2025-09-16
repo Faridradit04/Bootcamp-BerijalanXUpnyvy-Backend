@@ -26,9 +26,6 @@ export const UpdateSchema = Joi.object({
     password: Joi.string().min(8),
 });
 
-export const DeleteSchema = Joi.object({
-});
-
 
 router.post('/login', MValidate(LoginSchema), CLogin);
 router.post('/register', MValidate(RegisterSchema), CRegister); 

@@ -38,7 +38,7 @@ export const errorHandler = (
       message: "An unexpected error occurred",
       error: {
         message: "Internal server error",
-        ...(isDevelopment && { detail: String(err) }), // Stringify the unknown error
+        ...(isDevelopment && { detail: String(err) }), 
       },
     };
 

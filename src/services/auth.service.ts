@@ -15,7 +15,6 @@ export const SLogin = async (
   usernameOrEmail: string,
   password: string
 ): Promise<IGlobalResponse<ILoginResponse>> => {
-  // Fix 1: Find the admin by username or email only.
   const admin = await prisma.admin.findFirst({
     where: {
       OR: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
