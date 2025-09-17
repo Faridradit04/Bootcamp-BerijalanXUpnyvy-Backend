@@ -1,19 +1,26 @@
 import express from "express";
 import cors from "cors";
-import { errorHandler } from "./middlewares/error.middleware.ts";
-import authRoutes from "./routes/auth.route.ts";
-import {connectRedis} from "./configs/redis.config.ts";
+import { errorHandler } from "./middlewares/error.middleware";
+import authRoutes from "./routes/auth.route";
+import { connectRedis } from "./configs/redis.config";
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-
-// connectRedis();
 app.use(cors());
-
 app.use("/api/auth", authRoutes);
 app.use(errorHandler);
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+
+(async () => {
+  try {
+    await connectRedis(); 
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("❌ Failed to connect to Redis. Server not started.", error);
+    process.exit(1);
+  }
+})();
