@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { IGlobalResponse, ILoginResponse } from "../interfaces/global.interface.js";
 import { error } from "console";
+import { number } from "joi";
 
 const prisma = new PrismaClient();
 
@@ -180,3 +181,5 @@ export const SGetAllAdmins= async (): Promise<IGlobalResponse>=> {
     data:admins,
   }
 }
+
+
