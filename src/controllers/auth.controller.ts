@@ -1,6 +1,7 @@
 import {Request,Response,NextFunction} from "express";
 import {
-    SLogin,SUpdateAdmin,SdeleteAdmin,SRegisterAdmin
+    SLogin,SUpdateAdmin,SdeleteAdmin,SRegisterAdmin,
+    SGetAllAdmins
 } from "../services/auth.service.ts";
 
 export const CLogin=async (
@@ -34,7 +35,7 @@ catch(error){
     next(error);
 }
 }
-const Cupdateadmin = async (
+export const Cupdateadmin = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -54,7 +55,7 @@ const Cupdateadmin = async (
     }
 };
 
-const CDeleteadmin= async ( 
+export const CDeleteadmin= async ( 
     req:Request,
     res:Response,
     next:NextFunction 
@@ -64,5 +65,17 @@ const CDeleteadmin= async (
     res.status(200).json(result)
 }
 
+export const CGetAllAdmins= async (
+    req:Request,
+    res:Response,
+    next:NextFunction
+): Promise<void> => {
+    try {
+        const result = await SGetAllAdmins();
+        res.status(200).json(result);
 
-export { CDeleteadmin,Cupdateadmin}
+    }
+    catch (error){
+        next(error);
+    }
+}

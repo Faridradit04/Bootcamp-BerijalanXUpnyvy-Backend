@@ -124,3 +124,24 @@ const generateCacheKey = (req: Request, prefix: string): string => {
   
   return `${prefix}:${hash}`;
 };
+
+export const CachePresets={
+  short : (ttl:number = 60) : CacheOptions => ({
+    ttl,
+    keyPrefix: "short_cache",
+  }),
+  medium: (ttl:number=300) : CacheOptions=>({
+    ttl,
+    keyPrefix:"medium_cache"
+  }),
+  long: (ttl:number=3600): CacheOptions => ({
+    ttl,
+    keyPrefix:"long_cache"
+  }),
+  user: (ttl: number=600): CacheOptions=>({
+    ttl,
+    keyPrefix:"user_cache"
+  })
+
+
+}
