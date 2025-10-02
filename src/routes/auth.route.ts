@@ -1,8 +1,10 @@
+
 import { Router } from 'express';
 import Joi from "joi";
 import { CLogin, CRegister,CDeleteadmin,Cupdateadmin,CGetAllAdmins } from '../controllers/auth.controller.ts';
 import { MValidate } from '../middlewares/error.middleware.ts';
-
+import { MAuthValidate } from '../middlewares/auth.middleware.ts';
+import { MCache, MInvalidateCache, CachePresets } from '../middlewares/cache.middleware.ts';
 const router = Router();
 
 // Skema Validasi
@@ -27,9 +29,9 @@ export const UpdateSchema = Joi.object({
 });
 
 
-router.post('/login', MValidate(LoginSchema), CLogin);
-router.post('/register', MValidate(RegisterSchema), CRegister); 
-router.put('/update/:id', MValidate(UpdateSchema), Cupdateadmin);
-router.delete('/delete/:id', CDeleteadmin); 
-router.get('/admins',CGetAllAdmins);
+router.post('/login', MValidate(LoginSchema), CLogin); 
+router.post('/register', MValidate(RegisterSchema), MAuthValidate , MInvalidateCache(["api_cache:*","user_cache:*"]), CRegister); // Invalidate all relevant caches on new admin
+router.put('/update/:id', MValidate(UpdateSchema), MAuthValidate , MInvalidateCache(["api_cache:*","user_cache:*"]), Cupdateadmin); // Invalidate on update
+router.delete('/delete/:id', MAuthValidate , MInvalidateCache(["api_cache:*","user_cache:*"]), CDeleteadmin); 
+router.get('/admins', MAuthValidate , MCache(CachePresets.user(300)), CGetAllAdmins); 
 export default router;

@@ -1,7 +1,10 @@
+
 import { Router } from "express";
 import Joi from "joi";
 import { CDelete, CCreate, CGet, CUpdate } from "../controllers/counter.controller";
 import { MValidate } from "../middlewares/error.middleware";
+import { MAuthValidate } from "../middlewares/auth.middleware";
+import { MCache, MInvalidateCache, CachePresets } from '../middlewares/cache.middleware.ts'; // <--- Add this import
 
 const router = Router();
 
@@ -29,10 +32,11 @@ const getSchema = Joi.object({
   id: Joi.number().required(),
 });
 
+const COUNTER_CACHE_PATTERN = "api_cache:counter:*"; // A specific pattern for counter-related caches
 
-router.post("/create", MValidate(createSchema), CCreate);
-router.put("/update", MValidate(updateSchema), CUpdate);
-router.delete("/delete", MValidate(deleteSchema), CDelete);
-router.get("/get", MValidate(getSchema), CGet);
+router.post("/create", MValidate(createSchema), MAuthValidate , MInvalidateCache([COUNTER_CACHE_PATTERN]) , CCreate);
+router.put("/update", MValidate(updateSchema), MAuthValidate , MInvalidateCache([COUNTER_CACHE_PATTERN]) , CUpdate);
+router.delete("/delete", MValidate(deleteSchema), MAuthValidate , MInvalidateCache([COUNTER_CACHE_PATTERN]) , CDelete);
+router.get("/get", MValidate(getSchema), MAuthValidate , MCache(CachePresets.short(60)) , CGet); // Cache a single counter get for 60 seconds
 
 export default router;
